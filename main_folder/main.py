@@ -3,12 +3,14 @@ import os
 import google.generativeai as genai
 import pandas as pd
 import fitz  # PyMuPDF for PDF parsing
-from dotenv import GOOGLE_API
-import google.generativeai as genai
+from dotenv import load_dotenv  # Correct usage
 
+# --- Load environment variables from .env ---
+load_dotenv()
+GOOGLE_API_KEY = os.getenv("GOOGLE_API")
 
-genai.configure(api_key=GOOGLE_API)
-
+# --- Configure Gemini Model ---
+genai.configure(api_key=GOOGLE_API_KEY)
 model = genai.GenerativeModel(model_name="models/gemini-1.5-pro-latest")
 
 # --- Helper Functions ---
@@ -33,9 +35,9 @@ def analyze_feedback(feedback: str) -> str:
     return response.text
 
 # --- Streamlit Interface ---
-st.title("🧠 AI HR Assistant — Resume + Feedback Analysis")
+st.title("AI HR Assistant — Resume + Feedback Analysis")
 
-tab1, tab2 = st.tabs(["📄 Resume Screening", "📝 Feedback Analysis"])
+tab1, tab2 = st.tabs(["Resume Screening", "Feedback Analysis"])
 
 with tab1:
     st.header("Upload Resumes and Paste Job Description")
