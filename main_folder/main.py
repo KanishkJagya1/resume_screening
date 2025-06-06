@@ -3,11 +3,11 @@ import os
 import google.generativeai as genai
 import pandas as pd
 import fitz  # PyMuPDF for PDF parsing
-
+from dotenv import GOOGLE_API
 import google.generativeai as genai
 
-GOOGLE_API_KEY = "AIzaSyDxLnVZlQTY8ZfmS3qEsyRTleFCCQU0Q6w"
-genai.configure(api_key=GOOGLE_API_KEY)
+
+genai.configure(api_key=GOOGLE_API)
 
 model = genai.GenerativeModel(model_name="models/gemini-1.5-pro-latest")
 
