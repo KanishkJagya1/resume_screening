@@ -1,188 +1,339 @@
-# 🚀 HR AI Toolkit: Resume Screener & Employee Sentiment Analysis
+# HR AI Toolkit: Resume Screener & Employee Sentiment Analysis
+
+A comprehensive AI-powered HR automation toolkit that leverages Google's Gemini API to streamline resume screening and employee sentiment analysis processes.
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Features](#features)
+- [Architecture](#architecture)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [Usage](#usage)
+- [Project Structure](#project-structure)
+- [API Documentation](#api-documentation)
+- [Testing](#testing)
+- [Contributing](#contributing)
+- [License](#license)
+
+## Overview
+
+The HR AI Toolkit addresses two critical challenges in human resources management:
+
+1. **Automated Resume Screening**: Intelligently matches candidates to job requirements using advanced natural language processing
+2. **Employee Sentiment Analysis**: Analyzes employee feedback to provide actionable insights into workplace culture and morale
+
+Built on Google's Gemini API, this toolkit provides enterprise-grade AI capabilities with a user-friendly Streamlit interface.
+
+## Features
+
+### Resume Screening Module
+- **Intelligent Matching**: Advanced AI-powered candidate evaluation beyond simple keyword matching
+- **Customizable Criteria**: Flexible screening parameters adaptable to specific role requirements
+- **Batch Processing**: Efficient handling of multiple resumes simultaneously
+- **Scoring System**: Quantitative candidate ranking with detailed justifications
+
+### Sentiment Analysis Module
+- **Multi-source Analysis**: Process surveys, feedback forms, and other textual data
+- **Granular Categorization**: Detailed sentiment classification (positive, negative, neutral)
+- **Theme Identification**: Automatic detection of underlying topics and concerns
+- **Trend Analysis**: Historical sentiment tracking and reporting
+
+### Technical Features
+- **Scalable Architecture**: Handles workloads from small teams to enterprise deployments
+- **RESTful API**: Optional API endpoints for system integration
+- **Data Privacy**: Secure handling of sensitive HR information
+- **Export Capabilities**: Results available in multiple formats (CSV, JSON, PDF)
+
+## Architecture
+
+The system follows a modular architecture with clear separation of concerns:
+
+```
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│   Streamlit UI  │────│  Core Services   │────│   Gemini API    │
+└─────────────────┘    └──────────────────┘    └─────────────────┘
+         │                       │                       │
+         │                       │                       │
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│  Data Storage   │────│  Processing      │────│  Configuration  │
+│  (CSV/JSON)     │    │  Pipeline        │    │  Management     │
+└─────────────────┘    └──────────────────┘    └─────────────────┘
+```
+
+## Prerequisites
+
+- Python 3.8 or higher
+- Google Cloud account with Gemini API access
+- 4GB+ RAM recommended for batch processing
+- Internet connection for API calls
+
+## Installation
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/KanishkJagya1/resume_screening.git
+cd resume_screening
+```
+
+### 2. Create Virtual Environment
+
+```bash
+# Create virtual environment
+python -m venv hr_tech_env
+
+# Activate virtual environment
+# Windows
+hr_tech_env\Scripts\activate
+
+# macOS/Linux
+source hr_tech_env/bin/activate
+```
+
+### 3. Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Verify Installation
+
+```bash
+python -c "import google.generativeai; print('Installation successful')"
+```
+
+## Configuration
+
+### API Key Setup
+
+#### Option 1: Environment Variable (Recommended for Production)
+
+**Windows:**
+```cmd
+set GOOGLE_API_KEY=your_gemini_api_key_here
+```
+
+**macOS/Linux:**
+```bash
+export GOOGLE_API_KEY="your_gemini_api_key_here"
+```
+
+#### Option 2: .env File (Recommended for Development)
+
+Create a `.env` file in the project root:
+
+```env
+GOOGLE_API_KEY=your_gemini_api_key_here
+DEBUG=True
+MAX_BATCH_SIZE=50
+```
+
+### Additional Configuration
+
+Modify `config/settings.py` to customize:
+- API rate limits
+- Batch processing sizes
+- Output formats
+- Model parameters
+
+## Usage
+
+### Starting the Application
+
+```bash
+streamlit run main.py
+```
+
+The application will be available at `http://localhost:8501`
+
+### Resume Screening Workflow
+
+1. **Upload Job Description**: Paste or upload the job requirements
+2. **Upload Resumes**: Batch upload candidate resumes (PDF, DOCX, TXT)
+3. **Configure Screening**: Set matching criteria and weights
+4. **Process & Review**: Analyze results and export rankings
+
+### Sentiment Analysis Workflow
+
+1. **Data Input**: Upload employee feedback files or paste text directly
+2. **Analysis Configuration**: Select analysis depth and categories
+3. **Process Data**: Run sentiment analysis across all inputs
+4. **Generate Reports**: View insights and export detailed reports
+
+### Command Line Interface
+
+For automated workflows:
+
+```bash
+# Resume screening
+python -m src.resume_screening.cli --job-desc job.txt --resumes data/resumes/ --output results.csv
+
+# Sentiment analysis
+python -m src.sentiment_analysis.cli --input feedback.csv --output sentiment_report.json
+```
+
+## Project Structure
+
+```
+hr-ai-toolkit/
+├── api/                    # REST API endpoints
+│   ├── __init__.py
+│   ├── resume_api.py
+│   └── sentiment_api.py
+├── config/                 # Configuration files
+│   ├── __init__.py
+│   └── settings.py
+├── data/                   # Sample data and outputs
+│   ├── input/
+│   ├── output/
+│   └── samples/
+├── src/                    # Core application logic
+│   ├── __init__.py
+│   ├── resume_screening/   # Resume screening module
+│   │   ├── __init__.py
+│   │   ├── screener.py
+│   │   ├── processor.py
+│   │   └── cli.py
+│   ├── sentiment_analysis/ # Sentiment analysis module
+│   │   ├── __init__.py
+│   │   ├── analyzer.py
+│   │   ├── processor.py
+│   │   └── cli.py
+│   └── utils/              # Shared utilities
+│       ├── __init__.py
+│       ├── file_handler.py
+│       └── api_client.py
+├── tests/                  # Test suites
+│   ├── __init__.py
+│   ├── test_resume_screening.py
+│   ├── test_sentiment_analysis.py
+│   └── test_integration.py
+├── .env.example           # Environment variables template
+├── .gitignore
+├── main.py                # Streamlit application entry point
+├── requirements.txt       # Python dependencies
+└── README.md
+```
+
+## API Documentation
+
+### Resume Screening Endpoint
+
+```http
+POST /api/v1/screen-resumes
+Content-Type: application/json
+
+{
+  "job_description": "Software Engineer position...",
+  "resumes": ["resume1_text", "resume2_text"],
+  "criteria": {
+    "required_skills": ["Python", "SQL"],
+    "experience_years": 3,
+    "education_level": "Bachelor"
+  }
+}
+```
+
+### Sentiment Analysis Endpoint
+
+```http
+POST /api/v1/analyze-sentiment
+Content-Type: application/json
+
+{
+  "texts": ["Employee feedback text 1", "Employee feedback text 2"],
+  "analysis_type": "detailed",
+  "categories": ["satisfaction", "workload", "management"]
+}
+```
+
+## Testing
+
+Run the test suite:
+
+```bash
+# Run all tests
+python -m pytest tests/
+
+# Run specific module tests
+python -m pytest tests/test_resume_screening.py
+
+# Run with coverage
+python -m pytest tests/ --cov=src --cov-report=html
+```
+
+## Performance Considerations
+
+- **Batch Size**: Limit batch processing to 50 items for optimal performance
+- **Rate Limiting**: API calls are automatically throttled to respect Gemini API limits
+- **Caching**: Processed results are cached to avoid redundant API calls
+- **Memory Usage**: Large file processing is handled in chunks to manage memory consumption
+
+## Security & Privacy
+
+- API keys are never logged or stored in plain text
+- Employee data is processed in memory and not persisted unless explicitly requested
+- All API communications use HTTPS encryption
+- Optional data anonymization features available
+
+## Troubleshooting
+
+### Common Issues
+
+**API Key Issues:**
+```bash
+# Verify API key is set
+python -c "import os; print('API Key:', os.getenv('GOOGLE_API_KEY', 'Not Set'))"
+```
+
+**Memory Issues:**
+- Reduce batch size in configuration
+- Process files individually for large datasets
+
+**API Rate Limits:**
+- Enable rate limiting in settings
+- Implement exponential backoff (included by default)
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+### Development Setup
+
+```bash
+# Install development dependencies
+pip install -r requirements-dev.txt
+
+# Install pre-commit hooks
+pre-commit install
+
+# Run linting
+flake8 src/ tests/
+black src/ tests/
+```
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Support
+
+- **Documentation**: [Wiki Pages](https://github.com/KanishkJagya1/resume_screening/wiki)
+- **Issues**: [GitHub Issues](https://github.com/KanishkJagya1/resume_screening/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/KanishkJagya1/resume_screening/discussions)
+
+## Acknowledgments
+
+- Google Gemini API for providing advanced language model capabilities
+- Streamlit team for the excellent web application framework
+- Contributors and beta testers who helped improve this toolkit
 
 ---
 
-Welcome to the **HR AI Toolkit**! This project leverages the power of Google's **Gemini API** to bring intelligent automation to two critical HR functions: **resume screening** and **employee sentiment analysis**. Say goodbye to tedious manual tasks and hello to data-driven insights that can transform your recruitment and workplace culture.
-
-## ✨ Project Highlights
-
-In today's dynamic business landscape, attracting top talent and fostering a positive work environment are paramount. This toolkit provides innovative solutions to these challenges:
-
-1.  **Smart Resume Screener:** Revolutionize your hiring process. This system intelligently filters resumes, matching candidates to job descriptions and desired skills, drastically cutting down on review time and accelerating time-to-hire.
-
-2.  **Insightful Employee Sentiment Analysis:** Understand your team's pulse. By analyzing textual feedback, this system provides actionable insights into employee morale, helping you proactively address concerns and cultivate a thriving culture.
-
-Both modules are built on the robust capabilities of the **Google Gemini API**, ensuring cutting-edge natural language understanding and generation.
-
-## 🌟 Key Features
-
-* **⚡ Intelligent Resume Matching:**
-
-    * **Advanced AI-Powered Screening:** Go beyond keyword matching. The system understands the nuances of resumes and job descriptions to identify the best fit.
-
-    * **Efficiency Booster:** Automate the initial sifting, allowing your HR team to focus on high-potential candidates.
-
-    * **Customizable Criteria:** Adapt the screening parameters to perfectly align with any role's requirements.
-
-* **💖 Automated Sentiment Detection:**
-
-    * **Real-time Insights:** Quickly process large volumes of text data (surveys, feedback forms) to gauge collective sentiment.
-
-    * **Granular Analysis:** Categorize sentiment as positive, negative, or neutral, and even identify underlying themes and pain points.
-
-    * **Proactive Engagement:** Use data to inform HR strategies, improve employee satisfaction, and reduce attrition.
-
-* **🧠 Gemini API at its Core:**
-
-    * **State-of-the-Art NLP:** Utilizes the latest advancements in large language models for unparalleled accuracy in text comprehension.
-
-    * **Scalable Performance:** Designed to handle varying workloads, from small teams to large enterprises.
-
-* **🧩 Adaptable & Modular Design:**
-
-    * **Future-Ready Architecture:** While current implementations offer different levels of modularity, the foundational design supports easy expansion and integration into existing HRIS platforms.
-
-    * **Clear Separation of Concerns:** Components are designed to be distinct for easier understanding and maintenance (especially in the pipeline version).
-
-## 🏛️ System Architecture & Implementation Approaches
-
-This project offers two distinct pathways, catering to different development needs and stages:
-
----
-
-### 1. The Complete Pipeline System (Experimental)
-
-* **Vision:** This represents our ambitious goal: a fully integrated, end-to-end HR AI pipeline. It's designed with modularity, comprehensive logging, and sequential processing in mind, aiming for production-grade robustness.
-
-* **Current Status:** This system is **experimental** and a work in progress. While it showcases the architectural blueprint for a scalable solution, its complete functionality and stability are under active development. You might encounter areas requiring debugging or further implementation.
-
-* **Best For:** Developers and contributors who wish to delve into a more complex system, understand a potential full-scale deployment, and actively participate in refining and stabilizing a comprehensive HR AI workflow.
-
----
-
-### 2. The Single Integrated System (Guaranteed Working)
-
-* **Vision:** This approach prioritizes immediate, reliable functionality. It consolidates the core resume screening and sentiment analysis features into a simpler, more direct structure.
-
-* **Current Status:** This version is **guaranteed to work out-of-the-box** for its core functionalities. It's optimized for quick deployment and immediate utility, focusing on delivering the promised AI capabilities without the overhead of extensive logging or complex pipeline stages.
-
-* **Best For:** Users who need a functional, plug-and-play solution right away. Ideal for quick demonstrations, initial testing, or integration into environments where a streamlined, direct application is preferred.
-
----
-
-The repository is structured to allow you to easily navigate between, or choose to utilize, the version that best suits your project's current requirements.
-
-## 🛠️ Getting Started: Setup & Installation
-
-Follow these steps to set up the project on your local machine:
-
-1.  **Clone the Repository:**
-    Get the code onto your system.
-    ```bash
-    git clone [https://github.com/KanishkJagya1/resume_screening.git](https://github.com/KanishkJagya1/resume_screening.git)
-    cd resume_screening
-    ```
-
-2.  **Create a Virtual Environment (Highly Recommended):**
-    Isolate your project dependencies to avoid conflicts.
-    ```bash
-    python -m venv venv
-    # On Windows:
-    .\venv\Scripts\activate
-    # On macOS/Linux:
-    source venv/bin/activate
-    ```
-
-3.  **Install Dependencies:**
-    Install all necessary Python libraries from the `requirements.txt` file.
-    ```bash
-    pip install -r requirements.txt
-    ```
-    (💡 *Ensure your `requirements.txt` includes essential libraries such as `google-generativeai`, `pandas`, `scikit-learn`, etc., based on your specific code implementations.*)
-
-## 🔑 Google Gemini API Key Configuration
-
-This project requires access to the Google Gemini API. Here's how to configure your key:
-
-1.  **Obtain Your API Key:**
-    Visit the [Google AI Studio](https://aistudio.google.com/app/apikey) to generate your unique API key.
-
-2.  **Securely Set Your API Key:**
-    For security best practices, we recommend setting your API key as an environment variable:
-
-    * **On macOS/Linux:**
-        ```bash
-        export GOOGLE_API_KEY="YOUR_API_KEY"
-        ```
-    * **On Windows (Command Prompt):**
-        ```cmd
-        set GOOGLE_API_KEY="YOUR_API_KEY"
-        ```
-    * **On Windows (PowerShell):**
-        ```powershell
-        $env:GOOGLE_API_KEY="YOUR_API_KEY"
-        ```
-
-    Alternatively, for development convenience (though less secure for production), you can place your API key directly in a `.env` file at the root of your project and load it using a library like `python-dotenv`.
-
-## 🚀 How to Use
-
-Usage varies depending on the system you choose. Navigate to the respective directories for detailed instructions and examples.
-
-### Using the Single Integrated System (Recommended for Quick Start)
-
-* **Location:** Navigate to the directory containing the integrated system's code (e.g., `src/integrated_system/`).
-
-* **Execution:** Run the main script, typically from your terminal:
-
-    ```bash
-    python your_main_integrated_script.py # Replace with your actual script name, e.g., main_app.py
-    ```
-
-* **Interaction:** The script will likely guide you through prompts for inputs like resume file paths, job description text, or employee feedback data. Refer to the script's internal comments or companion documentation for specific usage details.
-
-### Exploring the Complete Pipeline System (For Developers & Experimenters)
-
-* **Location:** Dive into the directories structured for the pipeline (e.g., `src/pipeline/data_ingestion/`, `src/pipeline/screening_module/`, etc.).
-
-* **Execution Flow:** Each stage of the pipeline (e.g., data ingestion, processing, analysis, logging) will have its own script. You'll generally run these in sequence.
-
-* **Development Note:** Be prepared for an exploration and debugging journey. This system is a blueprint for a more robust, scalable architecture, and may require further development to be fully operational.
-
-## 🤝 Contributing to the Project
-
-We welcome contributions from the community! If you'd like to improve this HR AI Toolkit, please follow our contribution guidelines:
-
-1.  **Fork** the repository to your GitHub account.
-
-2.  **Create a new branch** for your feature or bug fix:
-
-    ```bash
-    git checkout -b feature/your-awesome-feature
-    # or
-    git checkout -b bugfix/resolve-issue-xyz
-    ```
-
-3.  **Make your changes**, ensuring your code adheres to best practices and includes comprehensive comments.
-
-4.  **Commit your changes** with a clear and concise message:
-
-    ```bash
-    git commit -m 'feat: Add new advanced resume parsing logic'
-    ```
-
-5.  **Push your changes** to your forked repository:
-
-    ```bash
-    git push origin feature/your-awesome-feature
-    ```
-
-6.  **Open a Pull Request** against the `main` branch of this repository. Describe your changes thoroughly and link to any relevant issues.
-
-## 📄 License
-
-This project is open-source and distributed under the **MIT License**. See the [LICENSE](LICENSE) file in the repository root for more details.
-
----
-
-Made with ❤️ by Kanishk Jagya
+**Made with ❤️ for the HR community**
