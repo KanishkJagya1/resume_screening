@@ -1,15 +1,15 @@
-# config/google_ai_config.py
-import google.generativeai as genai
 import os
+import google.generativeai as genai
 from dotenv import load_dotenv
 
-load_dotenv()
 
 class GoogleAIConfig:
     def __init__(self):
-        self.api_key = os.getenv('GOOGLE_AI_API_KEY')
+        load_dotenv()
+        self.api_key = os.getenv("GOOGLE_API_KEY")
+        if not self.api_key:
+            raise ValueError("GOOGLE_API_KEY not found in environment variables.")
         genai.configure(api_key=self.api_key)
-        self.model = genai.GenerativeModel('gemini-pro')
-    
+
     def get_model(self):
-        return self.model
+        return genai.GenerativeModel(model_name="gemini-1.5-pro")
